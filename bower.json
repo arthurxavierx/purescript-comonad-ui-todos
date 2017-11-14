@@ -1,0 +1,23 @@
+{
+  "name": "todos",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-prelude": "^3.1.1",
+    "purescript-console": "^3.0.0",
+    "purescript-react-dom": "^4.1.0",
+    "purescript-functors": "^2.2.0",
+    "purescript-free": "^4.1.0",
+    "purescript-maps": "^3.5.2",
+    "purescript-freet": "^3.0.0",
+    "purescript-debug": "^3.0.0",
+    "purescript-simple-json": "^1.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^3.0.0"
+  }
+}
