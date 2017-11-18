@@ -10,6 +10,9 @@ type Task =
 
 type TasksModel = Array Task
 
+tasksInit :: TasksModel
+tasksInit = [{ id: 0, description: "Test", done: false }]
+
 type AppModel =
   { field :: String
   , uid :: Int
@@ -18,5 +21,11 @@ type AppModel =
 appInit :: TasksModel -> AppModel
 appInit tasks = { field: "", uid: length tasks }
 
-tasksInit :: TasksModel
-tasksInit = [{ id: 0, description: "Test", done: false }]
+type GlobalModel =
+  { field :: String
+  , uid :: Int
+  , tasks :: TasksModel
+  }
+
+globalInit :: TasksModel -> GlobalModel
+globalInit tasks = { field: "", uid: length tasks, tasks }

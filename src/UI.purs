@@ -26,22 +26,51 @@ explore
 explore write space = extract space send
   where
     send :: Handler base m
-    send base = base >>= \m -> write (move m space)
+    send base = base >>= \m -> write (move space m)
 
-liftUI
+liftUI :: forall base m mp. Monad base => m ~> mp -> UI base m ~> UI base mp
+liftUI liftm ui = \send -> ui \m -> send (m >>= pure <<< liftm)
+
+liftUIT :: forall base m mp. Monad base => MonadTrans mp => Monad m => UI base m ~> UI base (mp m)
+liftUIT = liftUI lift
+
+liftUIEff :: forall base m mp. Monad base => (forall a. base (m a) -> base (mp a)) -> UI base m ~> UI base mp
+liftUIEff liftm ui = \send -> ui (send <<< liftm)
+
+liftComponent
   :: forall base w m mp
    . Functor w
   => Monad base
-  => (m ~> mp)
-  -> (ComponentT base w m ~> ComponentT base w mp)
-liftUI liftm = map (\ui send -> ui \m -> send (m >>= pure <<< liftm))
+  => m ~> mp
+  -> ComponentT base w m ~> ComponentT base w mp
+liftComponent liftm = map (liftUI liftm)
 
-liftUIT
+liftComponentT
   :: forall base w m mp
    . Functor w
   => Monad base
   => MonadTrans mp
   => Monad m
-  => ComponentT base w m
-  ~> ComponentT base w (mp m)
-liftUIT = liftUI lift
+  => ComponentT base w m ~> ComponentT base w (mp m)
+liftComponentT = map liftUIT
+
+liftComponentEff
+  :: forall base w m mp
+   . Functor w
+  => Monad base
+  => (forall a. base (m a) -> base (mp a))
+  -> ComponentT base w m ~> ComponentT base w mp
+liftComponentEff liftm = map (liftUIEff liftm)
+
+effect
+  :: forall base w m a
+   . Monad base
+  => Comonad w
+  => Pairing m w
+  => (ComponentT base w m a -> base Unit)
+  -> ComponentT base w m a
+  -> UI base m a
+effect transform component send = extract component \base -> send do
+  action <- base
+  transform (move component action)
+  pure action
