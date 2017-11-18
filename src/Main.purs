@@ -6,13 +6,15 @@ import Control.Comonad (class Comonad)
 import Control.Monad.Eff (Eff)
 import DOM (DOM) as DOM
 import DOM.HTML (window) as DOM
-import DOM.HTML.Document (body) as DOM
-import DOM.HTML.Types (htmlElementToElement) as DOM
+import DOM.HTML.Types (htmlDocumentToNonElementParentNode) as DOM
 import DOM.HTML.Window (document) as DOM
+import DOM.Node.NonElementParentNode (getElementById) as DOM
+import DOM.Node.Types (ElementId(..)) as DOM
 import Data.Functor.Pairing (class Pairing)
 import Data.Traversable (for_)
 import React as R
-import React.DOM (div', h3', text)
+import React.DOM as D
+import React.DOM.Props as P
 import ReactDOM (render)
 import Todos.Cofree.App (appComponent) as Cofree
 import Todos.Moore.App (appComponent) as Moore
@@ -23,9 +25,10 @@ import UI.React as UI.React
 
 main :: forall eff. Eff (dom :: DOM.DOM | eff) Unit
 main = do
-  body <- DOM.window >>= DOM.document >>= DOM.body
+  document <- DOM.window >>= DOM.document
+  appDiv <- DOM.getElementById (DOM.ElementId "app") (DOM.htmlDocumentToNonElementParentNode document)
   ui <- loadUI
-  for_ body (render ui <<< DOM.htmlElementToElement)
+  for_ appDiv (render ui)
 
   where
     loadUI = do
@@ -33,13 +36,20 @@ main = do
       tasksMoore <- Persistence.load Persistence.keyMoore
       tasksStore <- Persistence.load Persistence.keyStore
       pure $
-        div'
-          [ h3' [ text "Cofree" ]
-          , toReact $ Cofree.appComponent tasksCofree
-          , h3' [ text "Moore" ]
-          , toReact $ Moore.appComponent tasksMoore
-          , h3' [ text "Store" ]
-          , toReact $ Store.appComponent tasksStore
+        D.div
+          [ P.className "Container" ]
+          [ D.div [ P.className "AppContainer" ]
+              [ D.h4' [ D.text "Cofree comonad" ]
+              , toReact $ Cofree.appComponent tasksCofree
+              ]
+          , D.div [ P.className "AppContainer" ]
+              [ D.h4' [ D.text "Moore machine" ]
+              , toReact $ Moore.appComponent tasksMoore
+              ]
+          , D.div [ P.className "AppContainer" ]
+              [ D.h4' [ D.text "Store comonad" ]
+              , toReact $ Store.appComponent tasksStore
+              ]
           ]
 
 toReact :: forall w m eff. Comonad w => Pairing m w => ReactComponent eff w m -> R.ReactElement

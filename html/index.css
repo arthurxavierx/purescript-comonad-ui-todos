@@ -1,0 +1,133 @@
+html {
+  font-family: 'Source Sans Pro', 'Helvetica', 'Arial', sans-serif;
+  font-size: 62.5%;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: #F5F5F5;
+
+  font-size: 1.5em;
+  line-height: 1.6;
+  font-weight: 400;
+  color: #121212;
+
+  margin: 0;
+}
+
+header {
+  text-align: center;
+}
+
+header h1 {
+  color: #666;
+}
+
+h1 {
+  font-size: 9.6rem;
+  font-weight: 300;
+}
+
+h4 {
+  font-size: 2.0rem;
+  font-weight: normal;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0.3rem 0 0.9rem;
+}
+
+.Container {
+  margin: 0 auto;
+
+  display: flex;
+  flex-flow: row;
+}
+
+.AppContainer {
+  background-color: #FFFFFF;
+
+  border-radius: 3px;
+  margin: 1.5rem;
+  padding: 1.2rem 1.5rem 1.45rem 1.5rem;
+  height: 100%;
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+}
+
+.App {
+  margin-top: 0.9rem;
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+}
+
+.App input[type="text"] {
+  font-size: 1.4rem;
+  border: none;
+  border-bottom: 1px solid #121212;
+  padding: 0.3rem 0.1rem;
+  outline: none;
+  flex: 1;
+}
+.App input[type="text"]:focus {
+  border-bottom: 1px solid #2050F9;
+}
+.App input[type="text"]::placeholder {
+  font-style: italic;
+  color: #A5A5A5;
+}
+
+.App small {
+  color: #666;
+  text-align: right;
+}
+
+
+.Tasks {
+  padding: 1.2rem 0 0.9rem;
+
+  flex-flow: row;
+  align-items: flex-start;
+}
+
+.Task {
+  font-size: 1.6rem;
+  border-bottom: 1px dotted #A5A5A5;
+  padding: 0.6rem 0 0.3rem;
+  margin: 0.6rem 0 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.Task span {
+  flex: 1;
+}
+.Task.done span {
+  color: #A5A5A5;
+  text-decoration: line-through;
+}
+
+.Task button {
+  background-color: #F0F0F0;
+  font-size: 1.6rem;
+  color: #666;
+
+  border: none;
+  border-radius: 50%;
+  outline: none;
+
+  line-height: 1.3rem;
+  padding: 0;
+  width: 2.1rem;
+  height: 2.1rem;
+}
+.Task button:hover {
+  background-color: #FFD6D6;
+  cursor: pointer;
+}
