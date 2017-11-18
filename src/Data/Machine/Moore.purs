@@ -6,9 +6,10 @@ import Control.Comonad (class Comonad)
 import Control.Comonad.Cofree.Trans (CofreeT, unfoldCofreeT)
 import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend)
-import Control.Monad.Free.Trans (FreeT, liftFreeT)
+import Control.Monad.Free.Trans (FreeT, interpret, liftFreeT)
 import Control.Monad.Rec.Class (class MonadRec)
 import Control.Monad.Trans.Class (class MonadTrans)
+import Data.Bifunctor (lmap)
 import Data.Functor.Pairing (class Pairing, pair)
 import Data.Identity (Identity(..))
 import Data.Tuple (Tuple(..))
@@ -37,6 +38,9 @@ liftComooreT input = ComooreT <<< liftFreeT <<< Tuple input
 
 action :: forall m i. Monad m => i -> ComooreT i m Unit
 action = flip liftComooreT unit
+
+mapAction :: forall m i j. Monad m => (i -> j) -> ComooreT i m ~> ComooreT j m
+mapAction f (ComooreT freet) = ComooreT $ interpret (lmap f) freet
 
 derive newtype instance functorComooreT :: Functor m => Functor (ComooreT i m)
 derive newtype instance applyComooreT :: Monad m => Apply (ComooreT i m)

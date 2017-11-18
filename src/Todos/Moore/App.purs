@@ -2,62 +2,72 @@ module Todos.Moore.App where
 
 import Prelude
 
-import Control.Comonad (extract, (=>>))
-import Control.Monad.Trans.Class (lift)
-import Data.Machine.Moore (ComooreT, MooreT, action, unfoldMooreT)
-import Data.Tuple (Tuple(..))
+import DOM (DOM)
+import Data.Array (filter, length)
+import Data.Machine.Moore (Comoore, Moore, action, mapAction, unfoldMoore)
+import Data.Tuple (Tuple(Tuple), fst)
 import React as R
 import React.DOM as D
 import React.DOM.Props as P
-import Todos.Model (AppModel, TasksModel, appInit)
+import Todos.Model (GlobalModel, TasksModel, globalInit)
 import Todos.Moore.Tasks as Tasks
-import UI (liftUIT)
-import UI.React (ReactComponent, ReactUI)
+import Todos.Persistence (keyMoore, save) as Persistence
+import UI.React (ReactComponent, ReactUI, ReactEff)
 import Unsafe.Coerce (unsafeCoerce)
 
-data AppInput = ChangeField String | IncrementUID
+data AppInput
+  = ChangeField String
+  | IncrementUID
+  | TasksAction Tasks.Input
 
-type AppSpace = MooreT AppInput Tasks.Space
-type AppAction = ComooreT AppInput Tasks.Action
+type AppSpace = Moore AppInput
+type AppAction = Comoore AppInput
 
-appComponent :: forall eff. TasksModel -> ReactComponent eff AppSpace AppAction
-appComponent tasksInit =
-  unfoldMooreT
-    step
-    (Tuple (Tasks.tasksComponent tasksInit) (appInit tasksInit))
-
+appComponent :: forall eff. TasksModel -> ReactComponent (dom :: DOM | eff) AppSpace AppAction
+appComponent tasksInit = unfoldMoore step (globalInit tasksInit)
   where
-    step (Tuple childComponent model) =
-      childComponent
-      =>> \child -> Tuple (render child model) (Tuple child <<< update model)
+    step model =
+      Tuple
+        (render model)
+        (fst <<< update model)
 
-    update :: AppModel -> AppInput -> AppModel
-    update model input =
-      case input of
-        ChangeField field -> model { field = field }
-        IncrementUID -> model { uid = model.uid + 1 }
+    update :: GlobalModel -> AppInput -> Tuple GlobalModel (ReactEff (dom :: DOM | eff) Unit)
+    update model input = Tuple newModel save
+      where
+        newModel =
+          case input of
+            ChangeField field -> model { field = field }
+            IncrementUID -> model { uid = model.uid + 1 }
+            TasksAction tasksInput ->
+              model { tasks = Tasks.tasksUpdate model.tasks tasksInput }
 
-    render :: ReactComponent eff Tasks.Space Tasks.Action -> AppModel -> ReactUI eff AppAction
-    render child model send =
+        save = Persistence.save Persistence.keyMoore newModel.tasks
+
+    render :: GlobalModel -> ReactUI (dom :: DOM | eff) AppAction
+    render model send =
       D.form
-        [ P.onSubmit \event -> send do
+        [ P.className "App"
+        , P.onSubmit \event -> send do
             _ <- R.preventDefault event
             pure $ createTask model
         ]
         [ D.input
             [ P._type "text"
+            , P.placeholder "What needs to be done?"
             , P.value model.field
             , P.onChange \event -> send do
                 let value = (unsafeCoerce event).target.value
                 pure $ action (ChangeField value)
             ]
             []
-        , D.button' [ D.text $ "Add" ]
-        , extract (liftUIT child) send
+        , Tasks.tasksComponent model.tasks (send <<< map (mapAction TasksAction))
+        , D.small'
+            [ D.text $ show (length $ filter _.done model.tasks) <> " tasks completed"
+            ]
         ]
 
-createTask :: AppModel -> AppAction Unit
+createTask :: GlobalModel -> AppAction Unit
 createTask model = do
   action (ChangeField "")
   action IncrementUID
-  lift $ action (Tasks.AddTask { id: model.uid, description: model.field, done: false })
+  action (TasksAction $ Tasks.AddTask { id: model.uid, description: model.field, done: false })
