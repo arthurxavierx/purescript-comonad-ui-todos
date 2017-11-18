@@ -1,5 +1,5 @@
 {
-  "name": "todos",
+  "name": "purescript-comonad-ui-todos",
   "ignore": [
     "**/.*",
     "node_modules",

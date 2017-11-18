@@ -1,5 +1,5 @@
 {
-  "name": "todos",
+  "name": "purescript-comonad-ui-todos",
   "files": [],
   "dependencies": {
     "create-react-class": "^15.6.2",
