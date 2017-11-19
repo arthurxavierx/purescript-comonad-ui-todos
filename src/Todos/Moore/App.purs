@@ -5,14 +5,14 @@ import Prelude
 import DOM (DOM)
 import Data.Array (filter, length)
 import Data.Machine.Moore (Comoore, Moore, action, mapAction, unfoldMoore)
-import Data.Tuple (Tuple(Tuple), fst)
+import Data.Tuple (Tuple(Tuple))
 import React as R
 import React.DOM as D
 import React.DOM.Props as P
-import Todos.Model (GlobalModel, TasksModel, globalInit)
+import Todos.Model (GlobalModel, TasksModel, Task, globalInit)
 import Todos.Moore.Tasks as Tasks
 import Todos.Persistence (keyMoore, save) as Persistence
-import UI.React (ReactComponent, ReactUI, ReactEff)
+import UI.React (ReactComponent, ReactUI)
 import Unsafe.Coerce (unsafeCoerce)
 
 data AppInput
@@ -29,19 +29,15 @@ appComponent tasksInit = unfoldMoore step (globalInit tasksInit)
     step model =
       Tuple
         (render model)
-        (fst <<< update model)
+        (update model)
 
-    update :: GlobalModel -> AppInput -> Tuple GlobalModel (ReactEff (dom :: DOM | eff) Unit)
-    update model input = Tuple newModel save
-      where
-        newModel =
-          case input of
-            ChangeField field -> model { field = field }
-            IncrementUID -> model { uid = model.uid + 1 }
-            TasksAction tasksInput ->
-              model { tasks = Tasks.tasksUpdate model.tasks tasksInput }
-
-        save = Persistence.save Persistence.keyMoore newModel.tasks
+    update :: GlobalModel -> AppInput -> GlobalModel
+    update model input =
+      case input of
+        ChangeField field -> model { field = field }
+        IncrementUID -> model { uid = model.uid + 1 }
+        TasksAction tasksInput ->
+          model { tasks = Tasks.tasksUpdate model.tasks tasksInput }
 
     render :: GlobalModel -> ReactUI (dom :: DOM | eff) AppAction
     render model send =
@@ -49,7 +45,9 @@ appComponent tasksInit = unfoldMoore step (globalInit tasksInit)
         [ P.className "App"
         , P.onSubmit \event -> send do
             _ <- R.preventDefault event
-            pure $ createTask model
+            let newTask = { id: model.uid, description: model.field, done: false }
+            Persistence.save Persistence.keyMoore ([newTask] <> model.tasks)
+            pure $ createTask newTask model
         ]
         [ D.input
             [ P._type "text"
@@ -66,8 +64,8 @@ appComponent tasksInit = unfoldMoore step (globalInit tasksInit)
             ]
         ]
 
-createTask :: GlobalModel -> AppAction Unit
-createTask model = do
+createTask :: Task -> GlobalModel -> AppAction Unit
+createTask newTask model = do
   action (ChangeField "")
   action IncrementUID
-  action (TasksAction $ Tasks.AddTask { id: model.uid, description: model.field, done: false })
+  action (TasksAction $ Tasks.AddTask newTask)
