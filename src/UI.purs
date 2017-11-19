@@ -70,7 +70,7 @@ effect
   => (ComponentT base w m a -> base Unit)
   -> ComponentT base w m a
   -> UI base m a
-effect transform component send = extract component \base -> send do
+effect eff component send = extract component \base -> send do
   action <- base
-  transform (move component action)
+  eff (move component action)
   pure action

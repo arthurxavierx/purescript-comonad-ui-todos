@@ -106,8 +106,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .Task span {
+  margin-right: 0.9rem;
   flex: 1;
 }
+.Task span:hover { cursor: pointer; }
 .Task.done span {
   color: #A5A5A5;
   text-decoration: line-through;
