@@ -18,15 +18,31 @@ body {
 
 header {
   text-align: center;
+  margin: 4.2rem 0;
 }
 
 header h1 {
   color: #666;
 }
 
+footer {
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: #B6B6B6;
+  margin: 5.4rem 0;
+  text-align: center;
+  display: flex;
+  flex-flow: column;
+}
+footer a {
+  color: #777777;
+  text-decoration: none;
+}
+
 h1 {
   font-size: 9.6rem;
   font-weight: 300;
+  line-height: 7.2rem;
 }
 
 h4 {
