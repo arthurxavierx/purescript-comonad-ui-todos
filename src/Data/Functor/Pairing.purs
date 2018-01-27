@@ -20,7 +20,7 @@ import Data.Functor.Product (Product(..))
 import Data.Identity (Identity(..))
 import Data.Tuple (Tuple(Tuple))
 
-class Pairing f g | f -> g, g -> f where
+class Pairing f g where
   pair :: forall a b c. (a -> b -> c) -> f a -> g b -> c
 
 zap :: forall f g a b. Pairing f g => f (a -> b) -> g a -> b

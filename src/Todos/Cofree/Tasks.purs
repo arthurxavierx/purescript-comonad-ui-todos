@@ -30,7 +30,7 @@ tasksComponent init = unfoldCofree render eval init
       , getTasks: Tuple tasks tasks
       }
 
-    render :: TasksModel -> ReactUI eff Action
+    render :: TasksModel -> ReactUI eff (Action Unit)
     render model send =
       D.div [ P.className "Tasks" ] $ fold $ model <#> \task ->
         [ D.div

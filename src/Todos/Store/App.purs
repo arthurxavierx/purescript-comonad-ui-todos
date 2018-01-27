@@ -31,7 +31,7 @@ appComponent tasksInit =
       Persistence.save Persistence.keyStore (pos $ lower component)
 
   where
-    render :: ReactComponent (dom :: DOM | eff) Tasks.Space AppAction -> AppModel -> ReactUI (dom :: DOM | eff) AppAction
+    render :: ReactComponent (dom :: DOM | eff) Tasks.Space AppAction -> AppModel -> ReactUI (dom :: DOM | eff) (AppAction Unit)
     render child model send =
       D.form
         [ P.className "App"

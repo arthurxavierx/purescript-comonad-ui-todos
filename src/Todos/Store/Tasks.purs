@@ -17,7 +17,7 @@ type Action = State TasksModel
 tasksComponent :: forall eff. TasksModel -> ReactComponent eff Space Action
 tasksComponent init = store render init
   where
-    render :: TasksModel -> ReactUI eff Action
+    render :: TasksModel -> ReactUI eff (Action Unit)
     render model send =
       D.div [ P.className "Tasks" ] $ fold $ model <#> \task ->
         [ D.div

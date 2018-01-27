@@ -21,6 +21,9 @@ type AppModel =
 appInit :: TasksModel -> AppModel
 appInit tasks = { field: "", uid: length tasks }
 
+
+-- | The `GlobalModel` type describes a model of the whole state of the application, as
+-- | used by the moore machine example, which models the Elm architecture.
 type GlobalModel =
   { field :: String
   , uid :: Int

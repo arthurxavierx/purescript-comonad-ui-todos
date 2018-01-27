@@ -39,7 +39,7 @@ appComponent tasksInit = unfoldMoore step (globalInit tasksInit)
         TasksAction tasksInput ->
           model { tasks = Tasks.tasksUpdate model.tasks tasksInput }
 
-    render :: GlobalModel -> ReactUI (dom :: DOM | eff) AppAction
+    render :: GlobalModel -> ReactUI (dom :: DOM | eff) (AppAction Unit)
     render model send =
       D.form
         [ P.className "App"

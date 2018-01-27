@@ -5,7 +5,7 @@ import Prelude
 import DOM (DOM)
 import Data.Array (filter)
 import Data.Foldable (fold)
-import Data.Machine.Moore (ComooreT, action)
+import Data.Machine.Moore (Comoore, action)
 import React.DOM as D
 import React.DOM.Props as P
 import Todos.Model (TasksModel, Task)
@@ -17,9 +17,9 @@ data Input
   | RemoveTask Int
   | ToggleDone Int
 
-type Action m = ComooreT Input m
+type Action = Comoore Input
 
-tasksComponent :: forall m eff. Monad m => TasksModel -> ReactUI (dom :: DOM | eff) (Action m)
+tasksComponent :: forall eff. TasksModel -> ReactUI (dom :: DOM | eff) (Action Unit)
 tasksComponent model send =
   D.div [ P.className "Tasks" ] $ fold $ model <#> \task ->
     [ D.div

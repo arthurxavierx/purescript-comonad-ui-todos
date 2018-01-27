@@ -2,7 +2,6 @@ module Main where
 
 import Prelude
 
-import Control.Comonad (class Comonad)
 import Control.Monad.Eff (Eff)
 import DOM (DOM) as DOM
 import DOM.HTML (window) as DOM
@@ -10,9 +9,7 @@ import DOM.HTML.Types (htmlDocumentToNonElementParentNode) as DOM
 import DOM.HTML.Window (document) as DOM
 import DOM.Node.NonElementParentNode (getElementById) as DOM
 import DOM.Node.Types (ElementId(..)) as DOM
-import Data.Functor.Pairing (class Pairing)
 import Data.Traversable (for_)
-import React as R
 import React.DOM as D
 import React.DOM.Props as P
 import ReactDOM (render)
@@ -20,8 +17,7 @@ import Todos.Cofree.App (appComponent) as Cofree
 import Todos.Moore.App (appComponent) as Moore
 import Todos.Persistence (keyCofree, keyMoore, keyStore, load) as Persistence
 import Todos.Store.App (appComponent) as Store
-import UI.React (ReactComponent)
-import UI.React as UI.React
+import UI.React (toReact)
 
 main :: forall eff. Eff (dom :: DOM.DOM | eff) Unit
 main = do
@@ -51,6 +47,3 @@ main = do
               , toReact $ Store.appComponent tasksStore
               ]
           ]
-
-toReact :: forall w m eff. Comonad w => Pairing m w => ReactComponent eff w m -> R.ReactElement
-toReact = flip R.createFactory {} <<< UI.React.explore

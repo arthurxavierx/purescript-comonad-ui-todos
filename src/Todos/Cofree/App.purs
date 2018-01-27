@@ -43,7 +43,7 @@ appComponent tasksInit =
       , incrementUID: model { uid = model.uid + 1 }
       }
 
-    render :: ReactComponent (dom :: DOM | eff) Tasks.Space AppAction -> AppModel -> ReactUI (dom :: DOM | eff) AppAction
+    render :: ReactComponent (dom :: DOM | eff) Tasks.Space AppAction -> AppModel -> ReactUI (dom :: DOM | eff) (AppAction Unit)
     render child model send =
       D.form
         [ P.className "App"
