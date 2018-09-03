@@ -1,6 +1,6 @@
 # purescript-comonad-ui-todos
 
-Simple task management application inspired by [TodoMVC](todomvc.com); written for the first part of my bachelor thesis [Comonads for User Interfaces](https://github.com/arthurxavierx/purescript-comonad-ui-todos/raw/master/ComonadsForUIs.pdf) based on Phil Freeman's [Comonads as spaces](http://blog.functorial.com/posts/2016-08-07-Comonads-As-Spaces.html).
+Simple task management application inspired by [TodoMVC](todomvc.com); written for the first part of my bachelor thesis [Comonads for User Interfaces](https://arthurxavierx.github.com/ComonadsForUIs.pdf) based on Phil Freeman's [Comonads as spaces](http://blog.functorial.com/posts/2016-08-07-Comonads-As-Spaces.html).
 
 This simple application demonstrates three types of UIs modelled with three different comonads, namely:
 
