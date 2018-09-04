@@ -2,13 +2,12 @@ module Todos.Moore.App where
 
 import Prelude
 
-import DOM (DOM)
 import Data.Array (filter, length)
 import Data.Machine.Moore (Comoore, Moore, action, mapAction, unfoldMoore)
 import Data.Tuple (Tuple(Tuple))
-import React as R
 import React.DOM as D
 import React.DOM.Props as P
+import React.SyntheticEvent as E
 import Todos.Model (GlobalModel, TasksModel, Task, globalInit)
 import Todos.Moore.Tasks as Tasks
 import Todos.Persistence (keyMoore, save) as Persistence
@@ -23,7 +22,7 @@ data AppInput
 type AppSpace = Moore AppInput
 type AppAction = Comoore AppInput
 
-appComponent :: forall eff. TasksModel -> ReactComponent (dom :: DOM | eff) AppSpace AppAction
+appComponent :: TasksModel -> ReactComponent AppSpace AppAction
 appComponent tasksInit = unfoldMoore step (globalInit tasksInit)
   where
     step model =
@@ -39,12 +38,12 @@ appComponent tasksInit = unfoldMoore step (globalInit tasksInit)
         TasksAction tasksInput ->
           model { tasks = Tasks.tasksUpdate model.tasks tasksInput }
 
-    render :: GlobalModel -> ReactUI (dom :: DOM | eff) (AppAction Unit)
+    render :: GlobalModel -> ReactUI (AppAction Unit)
     render model send =
       D.form
         [ P.className "App"
         , P.onSubmit \event -> send do
-            _ <- R.preventDefault event
+            _ <- E.preventDefault event
             let newTask = { id: model.uid, description: model.field, done: false }
             Persistence.save Persistence.keyMoore ([newTask] <> model.tasks)
             pure $ createTask newTask model
@@ -57,7 +56,6 @@ appComponent tasksInit = unfoldMoore step (globalInit tasksInit)
                 let value = (unsafeCoerce event).target.value
                 pure $ action (ChangeField value)
             ]
-            []
         , Tasks.tasksComponent model.tasks (send <<< map (mapAction TasksAction))
         , D.small'
             [ D.text $ show (length $ filter _.done model.tasks) <> " tasks completed"

@@ -8,12 +8,11 @@ import Control.Comonad.Pairing (select)
 import Control.Comonad.Trans.Class (lower)
 import Control.Monad.Free.Trans (FreeT, liftFreeT)
 import Control.Monad.Trans.Class (lift)
-import DOM (DOM)
 import Data.Functor.Pairing (class Pairing)
 import Data.Tuple (Tuple(..))
-import React as R
 import React.DOM as D
 import React.DOM.Props as P
+import React.SyntheticEvent as E
 import Todos.Cofree.Tasks as Tasks
 import Todos.Model (AppModel, TasksModel, appInit)
 import Todos.Persistence (keyCofree, save) as Persistence
@@ -24,7 +23,7 @@ import Unsafe.Coerce (unsafeCoerce)
 type AppSpace = CofreeT AppInterpreter Tasks.Space
 type AppAction = FreeT AppQuery Tasks.Action
 
-appComponent :: forall eff. TasksModel -> ReactComponent (dom :: DOM | eff) AppSpace AppAction
+appComponent :: TasksModel -> ReactComponent AppSpace AppAction
 appComponent tasksInit =
   unfoldCofreeT step (Tuple (Tasks.tasksComponent tasksInit) (appInit tasksInit))
   =>>
@@ -43,12 +42,12 @@ appComponent tasksInit =
       , incrementUID: model { uid = model.uid + 1 }
       }
 
-    render :: ReactComponent (dom :: DOM | eff) Tasks.Space AppAction -> AppModel -> ReactUI (dom :: DOM | eff) (AppAction Unit)
+    render :: ReactComponent Tasks.Space AppAction -> AppModel -> ReactUI (AppAction Unit)
     render child model send =
       D.form
         [ P.className "App"
         , P.onSubmit \event -> send do
-            _ <- R.preventDefault event
+            _ <- E.preventDefault event
             pure $ createTask model
         ]
         [ D.input
@@ -59,7 +58,6 @@ appComponent tasksInit =
                 let value = (unsafeCoerce event).target.value
                 pure $ changeField value
             ]
-            []
         , extract child send
         , select child $ Tasks.getDones \dones ->
             D.small' [ D.text $ show dones <> " tasks completed" ]

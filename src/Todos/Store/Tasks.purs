@@ -14,10 +14,10 @@ import UI.React (ReactComponent, ReactUI)
 type Space = Store TasksModel
 type Action = State TasksModel
 
-tasksComponent :: forall eff. TasksModel -> ReactComponent eff Space Action
+tasksComponent :: TasksModel -> ReactComponent Space Action
 tasksComponent init = store render init
   where
-    render :: TasksModel -> ReactUI eff (Action Unit)
+    render :: TasksModel -> ReactUI (Action Unit)
     render model send =
       D.div [ P.className "Tasks" ] $ fold $ model <#> \task ->
         [ D.div
@@ -35,8 +35,8 @@ tasksComponent init = store render init
         ]
 
 toggleDone :: Int -> Action Unit
-toggleDone id = modify $ map \task ->
+toggleDone id = void $ modify $ map \task ->
   if task.id == id then task { done = not task.done } else task
 
 removeTask :: Int -> Action Unit
-removeTask id = modify $ filter ((_ /= id) <<< _.id)
+removeTask id = void $ modify $ filter ((_ /= id) <<< _.id)

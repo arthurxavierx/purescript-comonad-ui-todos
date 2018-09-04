@@ -16,7 +16,7 @@ import UI.React (ReactComponent, ReactUI)
 type Space = Cofree Interpreter
 type Action = Free Query
 
-tasksComponent :: forall eff. TasksModel -> ReactComponent eff Space Action
+tasksComponent :: TasksModel -> ReactComponent Space Action
 tasksComponent init = unfoldCofree render eval init
   where
     eval :: TasksModel -> Interpreter TasksModel
@@ -30,7 +30,7 @@ tasksComponent init = unfoldCofree render eval init
       , getTasks: Tuple tasks tasks
       }
 
-    render :: TasksModel -> ReactUI eff (Action Unit)
+    render :: TasksModel -> ReactUI (Action Unit)
     render model send =
       D.div [ P.className "Tasks" ] $ fold $ model <#> \task ->
         [ D.div

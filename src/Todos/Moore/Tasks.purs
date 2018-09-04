@@ -2,7 +2,6 @@ module Todos.Moore.Tasks where
 
 import Prelude
 
-import DOM (DOM)
 import Data.Array (filter)
 import Data.Foldable (fold)
 import Data.Machine.Moore (Comoore, action)
@@ -19,7 +18,7 @@ data Input
 
 type Action = Comoore Input
 
-tasksComponent :: forall eff. TasksModel -> ReactUI (dom :: DOM | eff) (Action Unit)
+tasksComponent :: TasksModel -> ReactUI (Action Unit)
 tasksComponent model send =
   D.div [ P.className "Tasks" ] $ fold $ model <#> \task ->
     [ D.div

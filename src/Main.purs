@@ -2,14 +2,8 @@ module Main where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import DOM (DOM) as DOM
-import DOM.HTML (window) as DOM
-import DOM.HTML.Types (htmlDocumentToNonElementParentNode) as DOM
-import DOM.HTML.Window (document) as DOM
-import DOM.Node.NonElementParentNode (getElementById) as DOM
-import DOM.Node.Types (ElementId(..)) as DOM
 import Data.Traversable (for_)
+import Effect (Effect)
 import React.DOM as D
 import React.DOM.Props as P
 import ReactDOM (render)
@@ -18,11 +12,15 @@ import Todos.Moore.App (appComponent) as Moore
 import Todos.Persistence (keyCofree, keyMoore, keyStore, load) as Persistence
 import Todos.Store.App (appComponent) as Store
 import UI.React (toReact)
+import Web.DOM.NonElementParentNode (getElementById) as DOM
+import Web.HTML (window) as DOM
+import Web.HTML.Window (document) as DOM
+import Web.HTML.HTMLDocument (toNonElementParentNode) as DOM
 
-main :: forall eff. Eff (dom :: DOM.DOM | eff) Unit
+main :: Effect Unit
 main = do
   document <- DOM.window >>= DOM.document
-  appDiv <- DOM.getElementById (DOM.ElementId "app") (DOM.htmlDocumentToNonElementParentNode document)
+  appDiv <- DOM.getElementById "app" (DOM.toNonElementParentNode document)
   ui <- loadUI
   for_ appDiv (render ui)
 
