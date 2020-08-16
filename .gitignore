@@ -10,3 +10,4 @@
 dist
 .cache
 .spago
+.parcel-cache
