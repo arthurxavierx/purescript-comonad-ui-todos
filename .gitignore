@@ -7,4 +7,7 @@
 /.purs*
 /.psa*
 
-/html/index.js
+dist
+.cache
+.spago
+.parcel-cache

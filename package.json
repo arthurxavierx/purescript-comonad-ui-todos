@@ -5,5 +5,16 @@
     "create-react-class": "^15.6.2",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
+  },
+  "scripts": {
+    "start": "npm run build && parcel html/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "spago install",
+    "build-production": "npm run build && parcel build html/index.html",
+    "build": "spago build",
+    "clean": "rm -rf .cache .spago .psci_modules node_modules output dist"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-nightly.368"
   }
 }

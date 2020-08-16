@@ -12,6 +12,8 @@ We have implemented local storage in the browser for saving tasks for all UI exa
 
 ## Build instructions
 
+### With pulp and bower and browserify
+
 In order to build this application one must have the [PureScript](http://www.purescript.org/) compiler (version 0.11.7) installed, as well as the [npm](https://www.npmjs.com/) and [bower](https://bower.io/) tools for package management.
 
 After installing the prerequisites, simply run
@@ -19,3 +21,12 @@ After installing the prerequisites, simply run
 ```
 make
 ```
+
+### With spago and parcel
+
+`npm install` will install npm packages and purescript packages.
+`npm start` will start a development server with hot reloading (with [editor integration or `spago build --watch`](https://github.com/f-f/purescript-react-basic-todomvc#development))
+`npm build-production` will output a bundle in `dist`
+
+More [about the build environment and spago](https://github.com/purescript/spago/blob/master/README.md#why-we-dont-resolve-js-dependencies-when-bundling-and-how-to-do-it)
+
