@@ -19,3 +19,12 @@ After installing the prerequisites, simply run
 ```
 make
 ```
+
+### With spago
+
+`npm install` will install npm packages and purescript packages.
+`npm start` will start a development server with hot reloading (with [editor integration or `spago build --watch`](https://github.com/f-f/purescript-react-basic-todomvc#development))
+`npm build-production` will output a bundle in `dist`
+
+More [about the build environment and spago](https://github.com/purescript/spago/blob/master/README.md#why-we-dont-resolve-js-dependencies-when-bundling-and-how-to-do-it)
+
